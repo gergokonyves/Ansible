@@ -1,0 +1,19 @@
+---
+  - name: create vedett user
+    hosts: linux
+    become: true
+    vars:
+      username: vedett
+    tasks:
+      - name: create user
+        user:
+          name: "{{ username }}"
+          password: ""
+
+      - name: add the user to the sudoers file
+        become: true
+        lineinfile:
+          dest: /etc/sudoers
+          line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
+          validate: 'visudo -cf %s'
+

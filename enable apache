@@ -1,0 +1,28 @@
+---
+  - name: configure and start httpd as vedett
+    hosts: linux
+    become: true
+    vars:
+      httpd_user: vedett
+      httpd_group: vedett
+    tasks:
+      - name: update httpd conf file
+        replace:
+          path: /etc/httpd/conf/httpd.conf
+          regexp: 'User\s+\w+'
+          replace: 'User {{ httpd_user }}'
+        notify:
+          - restart httpd service
+
+      - name: update httpd conf file
+        replace:
+          path: /etc/httpd/conf/httpd.conf
+          regexp: 'Group\s+\w+'
+          replace: 'Group {{ httpd_group }}'
+        notify:
+          - restart httpd service
+
+    handlers:
+      - name: restart httpd service
+        service:
+          name: httpd

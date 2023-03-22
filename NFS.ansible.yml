@@ -1,0 +1,42 @@
+---
+  - name: Share /dir/marketing with NFS
+    hosts: linux
+    become: true
+    tasks:
+      - name: Install NFS utilities
+        yum:
+          name: nfs-utils
+          state: present
+      - name: Create marketing directory
+        file: 
+          path: /dir/marketing/
+          state: directory
+
+      - name:  Add /dir/marketing to NFS exports
+        lineinfile:
+          dest: /etc/exports
+          line: "/dir/marketing *(ro)"
+          state: present
+          create: true
+          
+
+      - name: Start NFS server
+        systemd:
+          name: nfs-server
+          state: started
+          enabled: true
+
+      - name: Create mount point
+        file:
+          path: /dir/speci
+          state: directory
+
+      - name: Get NFS share UUID
+        command: blkid -s UUID -o value /dev/nfs_share
+        register: nfs_uuid
+
+      - name: Add NFS share to fstab
+        lineinfile:
+          path: /etc/fstab
+          line: "UUID={{ nfs_uuid.stdout }} /dir/speci nfs defaults,_netdev 0 0"
+          state: present
