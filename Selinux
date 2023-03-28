@@ -1,15 +1,16 @@
 ---
     - name: Create directory with SELinux context
-    hosts: your_host
-    become: true
-    tasks:
-        - name: Create directory
-        file:
-        path: /home/my_directory
-        state: directory
+      hosts: linux
+      become: true
+      tasks:
+            - name: Create directory
+            file:
+            path: /home/my_directory
+            state: directory
 
-        - name: Set SELinux context for directory
-        sefcontext:
-            target: /home/my_directory
-            setype: user_home_t
-            state: present
+            - name: Set SELinux context for directory
+            sefcontext:
+                target: /home/my_directory
+                setype: user_home_t
+                state: present
+            
