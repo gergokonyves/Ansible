@@ -1,8 +1,0 @@
----
-  - name: httpd
-    hosts: linux
-    tasks:
-      - name: install httpd
-        yum:
-          name: httpd
-          state: present
